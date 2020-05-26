@@ -2,35 +2,45 @@
 
 SLEEP_DURATION=1
 
-# Старт таймера
+# Старт таймера.
 start-pomodoro() {
-    say "Start ${task}"
     echo "Task \"${task}\" - ${mins} min."
-    # Выключаем уведомления MacOS
-    osascript -e "tell application \"System Events\" to keystroke \"N\" using {command down, shift down, option down, control down}"
+    say "Start ${task}"
+    # Выключаем уведомления MacOS.
+    osascript -e "tell application \"System Events\" to keystroke \"N\" using {shift down, control down, option down, command down}"
     # Включаем музыку
     osascript -e "tell application \"Music\" to play playlist \"НТР\""
 }
 
-# Остановка таймера
+# Остановка таймера.
 stop-pomodoro() {
     local checkbox="[v]"
     local phrase="You are rock!"
 
     end=$SECONDS
     duration=$(((end - start) / 60))
+
     if ((duration < mins)); then
-        checkbox="[ ]"
-        phrase="Fail"
+        echo "\n"
+        read "completed?Task is completed? (y/N): "
+
+        if [[ ! $completed =~ ^[Yy]$ ]]; then
+            checkbox="[ ]"
+            phrase="Fail"
+        fi
     fi
 
-    # Записываем результат
-    echo "${now} | ${checkbox} | ${task} | ${duration} min." >>done.log
-    # Включаем уведомления MacOS
-    osascript -e "tell application \"System Events\" to keystroke \"N\" using {command down, shift down, option down, control down}"
-    # Выключаем музыку
+    if [[ duration < 10 ]]; then
+        duration=" ${duration}"
+    fi
+
+    # Записываем результат.
+    echo "${now} | ${duration} min. | ${checkbox} | ${task}" >>pomodoro.log
+    # Включаем уведомления MacOS.
+    osascript -e "tell application \"System Events\" to keystroke \"N\" using {shift down, control down, option down, command down}"
+    # Выключаем музыку.
     osascript -e "tell application \"Music\" to stop"
-    # Говорим фразу
+    # Говорим фразу.
     say "${phrase}"
 }
 
@@ -80,7 +90,7 @@ function TRAPINT() {
     exit
 }
 
-# Очищаем терминал перед запуском прогрессбара
+# Очищаем терминал перед запуском прогрессбара.
 reset
 
 start-pomodoro
