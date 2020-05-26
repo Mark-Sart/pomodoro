@@ -30,7 +30,7 @@ stop-pomodoro() {
         fi
     fi
 
-    if [[ duration < 10 ]]; then
+    if ((duration < 10)); then
         duration=" ${duration}"
     fi
 
