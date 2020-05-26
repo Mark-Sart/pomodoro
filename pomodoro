@@ -2,6 +2,7 @@
 
 SLEEP_DURATION=1
 
+# Старт таймера
 start-pomodoro() {
     say "Start ${task}"
     echo "Task \"${task}\" - ${mins} min."
@@ -11,20 +12,20 @@ start-pomodoro() {
     osascript -e "tell application \"Music\" to play playlist \"НТР\""
 }
 
+# Остановка таймера
 stop-pomodoro() {
     local checkbox="[v]"
     local phrase="You are rock!"
 
     end=$SECONDS
-    duration=$((( end - start )/60))
-    if ((duration < mins))
-        then
-            checkbox="[ ]"
-            phrase="Fail"
+    duration=$(((end - start) / 60))
+    if ((duration < mins)); then
+        checkbox="[ ]"
+        phrase="Fail"
     fi
 
     # Записываем результат
-    echo "${now} | ${checkbox} ${task} | ${duration} min." >> done.log
+    echo "${now} | ${checkbox} | ${task} | ${duration} min." >>done.log
     # Включаем уведомления MacOS
     osascript -e "tell application \"System Events\" to keystroke \"N\" using {command down, shift down, option down, control down}"
     # Выключаем музыку
@@ -40,7 +41,7 @@ progress-bar() {
     local fit_to_screen
     local space_reserved
 
-    space_reserved=6 # reserved width for the percentage value
+    space_reserved=10
     duration=${1}
     columns=$(tput cols)
     space_available=$((columns - space_reserved))
@@ -83,6 +84,5 @@ function TRAPINT() {
 reset
 
 start-pomodoro
-# Функция обеспечивает паузу и показ прогресс-бара в терминале
 progress-bar $((mins * 60))
 stop-pomodoro
