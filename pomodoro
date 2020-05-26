@@ -9,7 +9,7 @@ start-pomodoro() {
     # Выключаем уведомления MacOS.
     osascript -e "tell application \"System Events\" to keystroke \"N\" using {shift down, control down, option down, command down}"
     # Включаем музыку
-    osascript -e "tell application \"Music\" to play playlist \"НТР\""
+    osascript -e "tell application \"Music\" to play playlist \"Work\""
 }
 
 # Остановка таймера.
