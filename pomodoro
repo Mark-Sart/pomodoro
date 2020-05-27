@@ -4,10 +4,20 @@ SLEEP_DURATION=1
 
 # Старт таймера.
 start-pomodoro() {
-    echo "Task \"${task}\" - ${mins} min."
-    say "Start ${task}"
     # Выключаем уведомления MacOS.
     osascript -e "tell application \"System Events\" to keystroke \"N\" using {shift down, control down, option down, command down}"
+    # Выключаем уведомления Slack.
+    local slack=$(osascript -e "tell application \"System Events\" to (name of processes) contains \"Slack\"")
+    if [[ ${slack} == "true" ]]; then
+        osascript -e "activate application \"Slack\""
+        osascript -e "tell application \"System Events\" to keystroke \"/dnd for ${mins} minutes\""
+        osascript -e "tell application \"System Events\" to keystroke {return}"
+        osascript -e "activate application \"iTerm2\""
+    fi
+    # Выводим название задачи и продолжительность.
+    echo "Task \"${task}\" - ${mins} min."
+    # Проговариваем задачу.
+    say "Start ${task}"
     # Включаем музыку
     osascript -e "tell application \"Music\" to play playlist \"Work\""
 }
