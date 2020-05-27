@@ -11,11 +11,9 @@ start-pomodoro() {
     if [[ ${slack} == "true" ]]; then
         osascript -e "activate application \"Slack\""
         echo "/dnd for ${mins} minutes" | pbcopy
-        osascript -e "tell application \"System Events\" to keystroke key code 9 using {command down}"
-        osascript -e "tell application \"System Events\" to keystroke {return}"
+        paste
         echo "/Status Кодю. Буду на связи в $(date -v +${mins}M +"%T")" | pbcopy
-        osascript -e "tell application \"System Events\" to keystroke key code 9 using {command down}"
-        osascript -e "tell application \"System Events\" to keystroke {return}"
+        paste
         osascript -e "activate application \"iTerm2\""
     fi
     # Выводим название задачи и продолжительность.
@@ -52,19 +50,25 @@ stop-pomodoro() {
     echo "${now} | ${duration} min. | ${checkbox} | ${task}" >>pomodoro.log
     # Включаем уведомления MacOS.
     osascript -e "tell application \"System Events\" to keystroke \"N\" using {shift down, control down, option down, command down}"
-    # Снимаем статус в Slack.
+    # Включаем уведомления Slack и отчищаем статус.
     local slack=$(osascript -e "tell application \"System Events\" to (name of processes) contains \"Slack\"")
     if [[ ${slack} == "true" ]]; then
         osascript -e "activate application \"Slack\""
+        echo "/dnd off" | pbcopy
+        paste
         echo "/Status" | pbcopy
-        osascript -e "tell application \"System Events\" to keystroke key code 9 using {command down}"
-        osascript -e "tell application \"System Events\" to keystroke {return}"
+        paste
         osascript -e "activate application \"iTerm2\""
     fi
     # Выключаем музыку.
     osascript -e "tell application \"Music\" to stop"
     # Говорим фразу.
     say "${phrase}"
+}
+
+paste() {
+    osascript -e "tell application \"System Events\" to keystroke key code 9 using {command down}"
+    osascript -e "tell application \"System Events\" to keystroke {return}"
 }
 
 progress-bar() {
