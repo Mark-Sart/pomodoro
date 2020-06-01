@@ -12,7 +12,7 @@ start-pomodoro() {
         osascript -e "activate application \"Slack\""
         echo "/dnd for ${mins} minutes" | pbcopy
         paste
-        echo "/Status Кодю. Буду на связи в $(date -v +${mins}M +"%T")" | pbcopy
+        echo "/Status :warning: Programming... I'll be available at $(date -v +${mins}M +"%H:%M")" | pbcopy
         paste
         osascript -e "activate application \"iTerm2\""
     fi
